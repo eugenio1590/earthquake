@@ -11,20 +11,20 @@ default: &default
 
   # If nested_entries is true, then we'll pick up subdirectories within the source_entry_path.
   # You cannot set this option to true if you set source_entry_path to '/'
-  nested_entries: true
+  #nested_entries: true
 
   #  While using a File-System-based automated bundle generation feature, miscellaneous warnings suggesting css order
   #  conflicts may arise due to the mini-css-extract-plugin. For projects where css ordering has been mitigated through
   #  consistent use of scoping or naming conventions, the css order warnings can be disabled by setting
   #  css_extract_ignore_order_warnings to true
-  css_extract_ignore_order_warnings: false
+  #css_extract_ignore_order_warnings: false
 
   public_root_path: public
   public_output_path: packs
   cache_path: tmp/shakapacker
   webpack_compile_output: true
   # See https://github.com/shakacode/shakapacker#deployment
-  shakapacker_precompile: true
+  #shakapacker_precompile: true
 
   # Location for manifest.json, defaults to {public_output_path}/manifest.json if unset
   # manifest_path: public/packs/manifest.json
@@ -37,18 +37,18 @@ default: &default
   cache_manifest: false
 
   # Select loader to use, available options are 'babel' (default), 'swc' or 'esbuild'
-  webpack_loader: 'babel'
+  #webpack_loader: 'babel'
 
   # Set to true to enable check for matching versions of shakapacker gem and NPM package - will raise an error if there is a mismatch or wildcard versioning is used
-  ensure_consistent_versioning: false
+  #ensure_consistent_versioning: false
 
   # Select whether the compiler will use SHA digest ('digest' option) or most most recent modified timestamp ('mtime') to determine freshness
-  compiler_strategy: digest
+  #compiler_strategy: digest
 
   # Select whether the compiler will always use a content hash and not just in production
   # Don't use contentHash except for production for performance
   # https://webpack.js.org/guides/build-performance/#avoid-production-specific-tooling
-  useContentHash: false
+  #useContentHash: false
 
   # Setting the asset host here will override Rails.application.config.asset_host.
   # Here, you can set different asset_host per environment. Note that
@@ -57,20 +57,20 @@ default: &default
 
 development:
   <<: *default
-  compile: true
-  compiler_strategy: mtime
+  # This is false since we're running `bin/shakapacker -w` in Procfile.dev-static
+  compile: false
+  #compiler_strategy: mtime
 
   # Reference: https://webpack.js.org/configuration/dev-server/
   # Keys not described there are documented inline and in https://github.com/shakacode/shakapacker/
   dev_server:
     # For running dev server with https, set `server: https`.
     # server: https
-
     host: localhost
     port: 3035
     # Hot Module Replacement updates modules while the application is running without a full reload
     # Used instead of the `hot` key in https://webpack.js.org/configuration/dev-server/#devserverhot
-    hmr: false
+    hmr: true
     # If HMR is on, CSS will by inlined by delivering it as part of the script payload via style-loader. Be sure
     # that you add style-loader to your project dependencies.
     #
@@ -78,7 +78,7 @@ development:
     # In that case, style-loader is not needed as a dependency.
     #
     # mini-css-extract-plugin is a required dependency in both cases.
-    inline_css: true
+    #inline_css: true
     # Defaults to the inverse of hmr. Uncomment to manually set this.
     # live_reload: true
     client:
@@ -92,7 +92,7 @@ development:
     # Should we use gzip compression?
     compress: true
     # Note that apps that do not check the host are vulnerable to DNS rebinding attacks
-    allowed_hosts: 'auto'
+    allowed_hosts: [ 'localhost' ] # auto
     # Shows progress and colorizes output of bin/shakapacker[-dev-server]
     pretty: true
     headers:
@@ -115,7 +115,7 @@ production:
   compile: false
 
   # Use content hash for naming assets. Cannot be overridden by for production.
-  useContentHash: true
+  #useContentHash: true
 
   # Cache manifest.json for performance
   cache_manifest: true
