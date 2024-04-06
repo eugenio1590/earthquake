@@ -13,3 +13,12 @@
 //
 // const images = require.context('./images', true)
 // const imagePath = (name) => images(name, true)
+
+import ReactOnRails from 'react-on-rails';
+
+import Earthquakes from '../bundles/Earthquakes/components/Earthquakes';
+
+// This is how react_on_rails can see the HelloWorld in the browser.
+ReactOnRails.register({
+  Earthquakes,
+});
