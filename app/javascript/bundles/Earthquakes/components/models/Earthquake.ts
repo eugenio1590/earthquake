@@ -14,6 +14,13 @@ class Earthquake {
     public magnitude: Magnitude,
     public position: Coordinates
   ) {};
+
+  marker() {
+    return { 
+      title: this.title, 
+      position: {lat: this.position.latitude, lng: this.position.longitude} 
+    }
+  }
 }
 
 export default Earthquake;
