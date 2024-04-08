@@ -7,6 +7,9 @@
     "@babel/preset-env": "7",
     "@babel/preset-react": "^7.24.1",
     "@babel/runtime": "7",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.15",
     "@types/babel__core": "7",
     "@types/webpack": "5",
     "babel-loader": "8",
@@ -15,6 +18,7 @@
     "compression-webpack-plugin": "9",
     "css-loader": "^7.0.0",
     "css-minimizer-webpack-plugin": "^6.0.0",
+    "js-yaml": "^4.1.0",
     "mini-css-extract-plugin": "^2.8.1",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -28,6 +32,10 @@
     "webpack-cli": "4",
     "webpack-merge": "5"
   },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  },
   "version": "0.1.0",
   "babel": {
     "presets": [
@@ -39,6 +47,7 @@
   ],
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
+    "memfs": "^4.8.1",
     "react-refresh": "^0.14.0",
     "webpack-dev-server": "4"
   }
