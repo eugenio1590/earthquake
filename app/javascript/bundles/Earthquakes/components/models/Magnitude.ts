@@ -1,12 +1,12 @@
 export enum Type {
-  Md,
-  Ml,
-  Ms,
-  Mw,
-  Me,
-  Mi,
-  Mb,
-  MLg
+  Md = 'md',
+  Ml = 'ml',
+  Ms = 'ms',
+  Mw = 'mw',
+  Me = 'me',
+  Mi = 'mi',
+  Mb = 'mb',
+  MLg = 'mlg'
 }
 
 class Magnitude {

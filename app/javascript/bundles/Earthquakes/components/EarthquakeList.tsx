@@ -1,23 +1,25 @@
-import React, { FunctionComponent, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { 
-  Box, 
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  Box,
+  CircularProgress,
   List, ListItem, ListItemAvatar, ListItemText,
   IconButton,
   Avatar,
   Divider,
   Pagination,
   Tooltip,
-  Typography 
+  Typography
 } from "@mui/material";
 import { ChevronRight, Comment } from "@mui/icons-material";
 import moment from "moment";
 
 import CommentDialog from "./CommentDialog";
 
-import { State } from "./store";
+import { State, useAppDispatch } from "./store";
 import Earthquake from "./models/Earthquake";
 import { setEarthquake } from "./slice/earthquake";
+import { fetchEarthquakes } from "./api/fetchEarthquakes";
 
 interface Props {
   item: Earthquake
@@ -55,8 +57,9 @@ const EarthquakeItem: FunctionComponent<Props> = (props: Props) => {
 }
 
 function EarthquakeList() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
+  const isLoading: boolean = useSelector((state: State) => state.earthquakes.isLoading);
   const count: number = useSelector((state: State) => state.earthquakes.count);
   const page: number = useSelector((state: State) => state.earthquakes.page);
   const earthquakes: Earthquake[] = useSelector((state: State) => state.earthquakes.list);
@@ -72,26 +75,45 @@ function EarthquakeList() {
     onClose();
   }
   const onClose = () => setOpen(false);
+  const onPaginated = (nextPage: number, force: boolean = true) => {
+    if (force || page !== nextPage) {
+      dispatch(fetchEarthquakes(nextPage));
+    }
+  }
+
+  useEffect(() => onPaginated(page), [dispatch]); // Load the first page
 
   return (
     <Box sx={{ height: "100%", bgcolor: '#F0F0F0', display: 'flex', flexDirection: 'column', padding: 2 }}>
       <Typography variant="h5" paddingBottom={2}>
         USGS Earthquakes
       </Typography>
-      <List sx={{bgcolor: 'background.paper', marginBottom: 'auto'}}>
-        {earthquakes.map((eq, index) => (<>
-          <EarthquakeItem key={eq.id} item={eq} onShow={onShow} onAddComment={onAddComment}/>
-          {index + 1 < earthquakes.length && <Divider variant="inset" component="li" /> }
-        </>))}
-      </List>
-      <Pagination showFirstButton showLastButton count={count} page={page} />
+      {isLoading && <CircularProgress sx={{margin: 'auto'}} />}
+
+      {!isLoading && (
+        <>
+          <List sx={{ bgcolor: 'background.paper', marginBottom: 'auto' }}>
+            {earthquakes.map((eq, index) => (<>
+              <EarthquakeItem key={eq.id} item={eq} onShow={onShow} onAddComment={onAddComment} />
+              {index + 1 < earthquakes.length && <Divider variant="inset" component="li" />}
+            </>))}
+          </List>
+          <Pagination
+            showFirstButton
+            showLastButton
+            count={count}
+            page={page}
+            onChange={(_, page) => onPaginated(page, false)} />
+        </>
+      )}
+
       {selected && (
-        <CommentDialog 
-          open={open} 
+        <CommentDialog
+          open={open}
           earthquake={selected}
           onSubmit={onSubmit}
           onCancel={onClose}
-          onClose={onClose}/>
+          onClose={onClose} />
       )}
       
     </Box>
