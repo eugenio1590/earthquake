@@ -50,9 +50,10 @@ export const fetchEarthquakes = (page: number) => {
         count: Math.ceil(pagination.total / pagination.per_page),
         earthquakes: earthquakes.map(eq => {
           const { title, place, time, tsunami, magnitude, mag_type, coordinates } = eq.attributes;
+          const url = eq.links.external_url;
           const position = new Coordinates(parseFloat(coordinates.longitude), parseFloat(coordinates.latitude));
           const mag = new Magnitude(magnitude, Type[mag_type as keyof Type]);
-          return new Earthquake(parseInt(eq.id), title, place, time, tsunami, mag, position);
+          return new Earthquake(parseInt(eq.id), title, place, time, tsunami, mag, position, url);
         })
       })
       dispatch(action);

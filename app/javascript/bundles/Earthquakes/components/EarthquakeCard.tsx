@@ -47,6 +47,7 @@ const EarthquakeCard: FunctionComponent<Props> = (props: Props) => {
             </tr>
           </tbody>
         </table>
+        <a href={eq.url}>Read More</a>
       </div>
     </div>
   )

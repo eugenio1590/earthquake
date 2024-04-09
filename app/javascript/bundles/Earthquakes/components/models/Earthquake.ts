@@ -16,7 +16,8 @@ class Earthquake {
     public time: string,
     public tsunami: boolean,
     public magnitude: Magnitude,
-    public position: Coordinates
+    public position: Coordinates,
+    public url: string
   ) {};
 
   marker() {
