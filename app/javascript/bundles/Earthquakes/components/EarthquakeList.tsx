@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { 
   Box, 
   List, ListItem, ListItemAvatar, ListItemText, 
@@ -14,6 +14,7 @@ import moment from "moment";
 
 import { State } from "./store";
 import Earthquake from "./models/Earthquake";
+import { setEarthquake } from "./slice/earthquake";
 
 interface Props {
   item: Earthquake,
@@ -45,9 +46,11 @@ const EarthquakeItem: FunctionComponent<Props> = (props: Props) => {
 }
 
 function EarthquakeList() {
+  const dispatch = useDispatch();
   const count: number = useSelector((state: State) => state.earthquakes.count);
   const page: number = useSelector((state: State) => state.earthquakes.page);
   const earthquakes: Earthquake[] = useSelector((state: State) => state.earthquakes.list);
+  const onShow = (eq: Earthquake) => dispatch(setEarthquake(eq));
 
   return (
     <Box sx={{ height: "100%", bgcolor: '#F0F0F0', display: 'flex', flexDirection: 'column', padding: 2 }}>
@@ -55,8 +58,8 @@ function EarthquakeList() {
         USGS Earthquakes
       </Typography>
       <List sx={{bgcolor: 'background.paper', marginBottom: 'auto'}}>
-        {earthquakes.map((earthquake, index) => (<>
-          <EarthquakeItem key={earthquake.id} item={earthquake} onShow={() => { /* TODO */ }}/>
+        {earthquakes.map((eq, index) => (<>
+          <EarthquakeItem key={eq.id} item={eq} onShow={() => onShow(eq)}/>
           {index + 1 < earthquakes.length && <Divider variant="inset" component="li" /> }
         </>))}
       </List>

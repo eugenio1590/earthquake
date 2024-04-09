@@ -2,6 +2,10 @@ import Magnitude from "./Magnitude";
 
 export class Coordinates {
   constructor(public longitude: number, public latitude: number) {};
+
+  toGeoObject() {
+    return { lat: this.latitude, lng: this.longitude }
+  }
 }
 
 class Earthquake {
@@ -18,7 +22,7 @@ class Earthquake {
   marker() {
     return { 
       title: this.title, 
-      position: {lat: this.position.latitude, lng: this.position.longitude} 
+      position: this.position.toGeoObject()
     }
   }
 }
