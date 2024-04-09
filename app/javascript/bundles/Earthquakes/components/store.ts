@@ -2,9 +2,11 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 
 import earthquakesReducers from "./slice/earthquakes";
+import earthquakeReducers from "./slice/earthquake";
 
 const rootReducer = combineReducers({
-  earthquakes: earthquakesReducers
+  earthquakes: earthquakesReducers,
+  earthquake: earthquakeReducers
 });
 
 export type State = ReturnType<typeof rootReducer>;
