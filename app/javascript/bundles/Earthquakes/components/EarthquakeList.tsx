@@ -1,24 +1,28 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { 
   Box, 
-  List, ListItem, ListItemAvatar, ListItemText, 
+  List, ListItem, ListItemAvatar, ListItemText,
   IconButton,
   Avatar,
   Divider,
   Pagination,
+  Tooltip,
   Typography 
 } from "@mui/material";
-import { ChevronRight } from "@mui/icons-material";
+import { ChevronRight, Comment } from "@mui/icons-material";
 import moment from "moment";
+
+import CommentDialog from "./CommentDialog";
 
 import { State } from "./store";
 import Earthquake from "./models/Earthquake";
 import { setEarthquake } from "./slice/earthquake";
 
 interface Props {
-  item: Earthquake,
+  item: Earthquake
   onShow: (item: Earthquake) => void
+  onAddComment: (item: Earthquake) => void
 }
 
 const EarthquakeItem: FunctionComponent<Props> = (props: Props) => {
@@ -41,16 +45,33 @@ const EarthquakeItem: FunctionComponent<Props> = (props: Props) => {
         primary={item.place}
         secondary={`${date.format('YYYY-MM-DD HH:mm:ss')} (UTC ${date.format('Z')})`}
       />
+      <Tooltip title="Add a Comment">
+        <IconButton onClick={() => props.onAddComment(item)}>
+          <Comment />
+        </IconButton>
+      </Tooltip>
     </ListItem>
   )
 }
 
 function EarthquakeList() {
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
   const count: number = useSelector((state: State) => state.earthquakes.count);
   const page: number = useSelector((state: State) => state.earthquakes.page);
   const earthquakes: Earthquake[] = useSelector((state: State) => state.earthquakes.list);
+  const selected: Earthquake | null = useSelector((state: State) => state.earthquake.selected);
   const onShow = (eq: Earthquake) => dispatch(setEarthquake(eq));
+  const onAddComment = (eq: Earthquake) => {
+    dispatch(setEarthquake(eq));
+    setOpen(true);
+  }
+  const onSubmit = (eq: Earthquake, data: any) => {
+    /*TODO*/
+    console.log(eq, data);
+    onClose();
+  }
+  const onClose = () => setOpen(false);
 
   return (
     <Box sx={{ height: "100%", bgcolor: '#F0F0F0', display: 'flex', flexDirection: 'column', padding: 2 }}>
@@ -59,11 +80,20 @@ function EarthquakeList() {
       </Typography>
       <List sx={{bgcolor: 'background.paper', marginBottom: 'auto'}}>
         {earthquakes.map((eq, index) => (<>
-          <EarthquakeItem key={eq.id} item={eq} onShow={() => onShow(eq)}/>
+          <EarthquakeItem key={eq.id} item={eq} onShow={onShow} onAddComment={onAddComment}/>
           {index + 1 < earthquakes.length && <Divider variant="inset" component="li" /> }
         </>))}
       </List>
       <Pagination showFirstButton showLastButton count={count} page={page} />
+      {selected && (
+        <CommentDialog 
+          open={open} 
+          earthquake={selected}
+          onSubmit={onSubmit}
+          onCancel={onClose}
+          onClose={onClose}/>
+      )}
+      
     </Box>
   )
 }
