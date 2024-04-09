@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_09_193651) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_09_204432) do
   create_table "features", force: :cascade do |t|
     t.string "title"
     t.string "place"
@@ -21,6 +21,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_09_193651) do
     t.decimal "lng"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "magnitude"
+    t.integer "magnitude_type"
   end
 
 end

@@ -18,13 +18,30 @@ RSpec.describe Feature, type: :model do
     end
 
     it 'is invalid without a url' do
-        feature = build(:feature, url: nil)
-        expect(feature).not_to be_valid
-      end
+      feature = build(:feature, url: nil)
+      expect(feature).not_to be_valid
+    end
+
+    it 'is invalid without a magnitude' do
+      feature = build(:feature, magnitude: nil, magnitude_type: nil)
+      expect(feature).not_to be_valid
+    end
 
     it 'is invalid without coordinates' do
       feature = build(:feature, lat: nil, lng: nil)
       expect(feature).not_to be_valid
+    end
+
+    it 'is invalid with magnitude less than -1.0' do
+      feature = build(:feature, magnitude: -2.0)
+      expect(feature).not_to be_valid
+      expect(feature.errors[:magnitude]).to include("must be greater than or equal to -1.0")
+    end
+
+    it 'is invalid with magnitude greater than 10.0' do
+      feature = build(:feature, magnitude: 11.0)
+      expect(feature).not_to be_valid
+      expect(feature.errors[:magnitude]).to include("must be less than or equal to 10.0")
     end
 
     it 'is invalid with latitude less than -90.0' do

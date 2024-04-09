@@ -3,7 +3,11 @@ class FeatureSerializer
 
   set_type :feature
 
-  attributes :id, :title, :place, :time, :tsunami
+  attributes :id, :title, :place, :time, :tsunami, :magnitude
+
+  attribute :mag_type do |object|
+    object.magnitude_type
+  end
 
   attribute :coordinates do |object|
     {

@@ -5,6 +5,8 @@ FactoryBot.define do
     url { "http://localhost" }
     time { Time.current }
     tsunami { false }
+    magnitude_type { :md }
+    magnitude { 7.0 }
     lat { 40.7128 }
     lng { -74.0060 }
   end
