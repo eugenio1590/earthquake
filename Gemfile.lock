@@ -112,6 +112,20 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    jsonapi-serializer (2.2.0)
+      activesupport (>= 4.2)
+    kaminari (1.2.2)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.2)
+      kaminari-activerecord (= 1.2.2)
+      kaminari-core (= 1.2.2)
+    kaminari-actionview (1.2.2)
+      actionview
+      kaminari-core (= 1.2.2)
+    kaminari-activerecord (1.2.2)
+      activerecord
+      kaminari-core (= 1.2.2)
+    kaminari-core (1.2.2)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -258,6 +272,8 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   jbuilder
+  jsonapi-serializer
+  kaminari
   puma (~> 5.0)
   rails (~> 7.0.8, >= 7.0.8.1)
   react_on_rails (= 14.0)
