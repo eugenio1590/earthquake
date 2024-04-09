@@ -32,13 +32,13 @@ const EarthquakeItem: FunctionComponent<Props> = (props: Props) => {
   const date = moment(item.time);
   return (
     <ListItem 
-      alignItems="flex-start"
+      alignItems="center"
       secondaryAction={
         <IconButton edge="end" aria-label="show" onClick={() => props.onShow(item)}>
           <ChevronRight />
         </IconButton>
       }>
-      <ListItemAvatar>
+      <ListItemAvatar sx={{margin: 0}}>
         <Avatar sx={{ bgcolor: 'white', color: 'black' }} aria-label="magnitude">
           {item.magnitude.value}
         </Avatar>

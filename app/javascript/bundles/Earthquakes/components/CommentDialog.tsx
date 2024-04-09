@@ -36,7 +36,7 @@ const CommentDialog: FunctionComponent<Props> = (props: Props) => {
       <DialogContent>
         <DialogContentText>
           <b>Earthquake:</b> {props.earthquake.title}<br/>
-          Please enter your comment for this earthquake. Comments cannot be eddited or removed.
+          Please enter your comment for this earthquake. Comments cannot be edited or removed.
         </DialogContentText>
         <TextField
           autoFocus
