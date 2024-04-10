@@ -112,7 +112,7 @@ function EarthquakeList() {
 
       {!isLoading && earthquakes.length > 0 && (
         <>
-          <List sx={{ bgcolor: 'background.paper', marginBottom: 'auto' }}>
+          <List sx={{ bgcolor: 'background.paper', marginBottom: 'auto', maxHeight: '70vh', overflow: 'auto' }}>
             {earthquakes.map((eq, index) => (<>
               <EarthquakeItem key={eq.id} item={eq} onShow={onShow} onAddComment={onAddComment} />
               {index + 1 < earthquakes.length && <Divider variant="inset" component="li" />}

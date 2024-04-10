@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
+import { Map } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 import 'leaflet/dist/leaflet.css';
@@ -23,13 +24,23 @@ const mapCenter = {
 function EarthquakeMap() {
   const earthquakes: Earthquake[] = useSelector((state: State) => state.earthquakes.list);
   const selected: Earthquake | null = useSelector((state: State) => state.earthquake.selected);
-  const center = selected ? selected.position.toGeoObject() : mapCenter;
+  const [map, setMap] = useState<Map>(null);
+  const [popup, setPopup] = useState(null);
+  useEffect(() => {
+    if (map && selected && popup) {
+      const position = selected.position;
+      map.closePopup();
+      map.setView([position.latitude, position.longitude], 13);
+      map.openPopup(popup);
+    }
+  }, [map, selected, popup])
   return (
     <Box sx={{ height: "100%" }}>
       <MapContainer 
-        center={[center.lat, center.lng]} 
+        ref={setMap}
+        center={[mapCenter.lat, mapCenter.lng]} 
         zoom={5} 
-        scrollWheelZoom={false} 
+        scrollWheelZoom={true} 
         style={mapContainerStyle}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -39,7 +50,7 @@ function EarthquakeMap() {
           <Marker 
             key={eq.id} 
             position={[eq.position.latitude, eq.position.longitude]}>
-            <Popup>
+            <Popup ref={selected == eq ? setPopup : null}>
               <EarthquakeCard earthquake={eq} />
             </Popup>
           </Marker>
