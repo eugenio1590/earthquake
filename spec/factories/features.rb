@@ -9,5 +9,6 @@ FactoryBot.define do
     magnitude { 7.0 }
     lat { 40.7128 }
     lng { -74.0060 }
+    sequence(:payload) { |n| "payload#{n}"}
   end
 end

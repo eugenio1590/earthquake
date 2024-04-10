@@ -67,6 +67,22 @@ RSpec.describe Feature, type: :model do
       expect(feature).not_to be_valid
       expect(feature.errors[:lng]).to include("must be less than or equal to 180.0")
     end
+
+    it "is invalid without a payload" do
+      feature = build(:feature, payload: nil)
+      expect(feature).to_not be_valid
+    end
+  
+    it "is invalid with a duplicate payload" do
+      create(:feature, payload: "payload")
+      feature = build(:feature, payload: "payload")
+      expect(feature).to_not be_valid
+    end
+  
+    it "is valid with a unique payload" do
+      feature = build(:feature, payload: "feature____")
+      expect(feature).to be_valid
+    end
   end
 
   describe ".by_magnitude_type" do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_10_031816) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_10_052205) do
   create_table "comments", force: :cascade do |t|
     t.text "content"
     t.integer "feature_id", null: false
@@ -31,6 +31,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_10_031816) do
     t.datetime "updated_at", null: false
     t.decimal "magnitude"
     t.integer "magnitude_type"
+    t.string "payload"
   end
 
   add_foreign_key "comments", "features"
