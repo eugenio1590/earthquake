@@ -81,11 +81,6 @@ function EarthquakeList() {
     dispatch(setEarthquake(eq));
     setOpen(true);
   }
-  const onSubmit = (eq: Earthquake, data: any) => {
-    /*TODO*/
-    console.log(eq, data);
-    onClose();
-  }
   const onClose = () => setOpen(false);
   const onPaginated = (nextPage: number, filters: Filters, force: boolean = true) => {
     if (force || page !== nextPage) {
@@ -138,8 +133,6 @@ function EarthquakeList() {
         <CommentDialog
           open={open}
           earthquake={selected}
-          onSubmit={onSubmit}
-          onCancel={onClose}
           onClose={onClose} />
       )}
       

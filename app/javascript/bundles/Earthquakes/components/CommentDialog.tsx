@@ -1,4 +1,5 @@
 import React, { FunctionComponent, FormEvent } from "react";
+import { useSelector } from "react-redux";
 import { 
   Dialog, DialogTitle, 
   DialogContent, DialogContentText,
@@ -8,27 +9,42 @@ import {
 } from "@mui/material";
 
 import Earthquake from "./models/Earthquake";
+import { useAppDispatch, State } from "./store";
+import { addComment } from "./api/addComment";
+import { reset } from "./slice/comment";
+
 
 interface Props {
   open: boolean
   earthquake: Earthquake
-  onSubmit: (eq: Earthquake, data: any) => void
-  onCancel: () => void
   onClose: () => void
 }
 
 const CommentDialog: FunctionComponent<Props> = (props: Props) => {
+  const dispatch = useAppDispatch();
+  const isLoading: boolean = useSelector((state: State) => state.comment.isLoading);
+  const isSuccess: boolean | null = useSelector((state: State) => state.comment.isSuccess);
+  const error: string | null = useSelector((state: State) => state.comment.error);
+
+  const onClose = () => {
+    dispatch(reset());
+    props.onClose();
+  }
+
+  if (isSuccess) {
+    onClose();
+  }
+
   return (
     <Dialog
       open={props.open}
-      onClose={props.onClose}
+      onClose={onClose}
       PaperProps={{
         component: 'form',
         onSubmit: (event: FormEvent<HTMLFormElement>) => {
           event.preventDefault();
           const formData = new FormData(event.currentTarget);
-          const formJson = Object.fromEntries((formData as any).entries());
-          props.onSubmit(props.earthquake, formJson);
+          dispatch(addComment(props.earthquake, formData));
         },
       }}
     >
@@ -39,6 +55,7 @@ const CommentDialog: FunctionComponent<Props> = (props: Props) => {
           Please enter your comment for this earthquake. Comments cannot be edited or removed.
         </DialogContentText>
         <TextField
+          error={error !== null}
           autoFocus
           required
           margin="dense"
@@ -48,11 +65,13 @@ const CommentDialog: FunctionComponent<Props> = (props: Props) => {
           type="text"
           fullWidth
           variant="standard"
+          disabled={isLoading}
+          helperText={error}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.onClose}>Cancel</Button>
-        <Button type="submit">Add</Button>
+        <Button onClick={onClose} disabled={isLoading}>Cancel</Button>
+        <Button type="submit" disabled={isLoading}>Add</Button>
       </DialogActions>
     </Dialog>
   )

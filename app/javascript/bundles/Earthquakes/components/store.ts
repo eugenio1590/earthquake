@@ -5,10 +5,12 @@ import { useDispatch } from "react-redux";
 
 import earthquakesReducers from "./slice/earthquakes";
 import earthquakeReducers from "./slice/earthquake";
+import commentSliceReducers from "./slice/comment";
 
 const rootReducer = combineReducers({
   earthquakes: earthquakesReducers,
-  earthquake: earthquakeReducers
+  earthquake: earthquakeReducers,
+  comment: commentSliceReducers
 });
 
 export type State = ReturnType<typeof rootReducer>;

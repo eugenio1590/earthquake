@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
 
-  namespace :api do
-    resources :features
+  namespace :api, defaults: { format: :json } do
+    resources :features do
+      resources :comments
+    end
   end
 end
