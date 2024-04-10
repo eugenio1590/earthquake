@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_09_204432) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_10_031816) do
+  create_table "comments", force: :cascade do |t|
+    t.text "content"
+    t.integer "feature_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature_id"], name: "index_comments_on_feature_id"
+  end
+
   create_table "features", force: :cascade do |t|
     t.string "title"
     t.string "place"
@@ -25,4 +33,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_09_204432) do
     t.integer "magnitude_type"
   end
 
+  add_foreign_key "comments", "features"
 end

@@ -6,5 +6,7 @@ class Feature < ApplicationRecord
   validates :lat, numericality: { greater_than_or_equal_to: -90.0, less_than_or_equal_to: 90.0 }
   validates :lng, numericality: { greater_than_or_equal_to: -180.0, less_than_or_equal_to: 180.0 } 
 
+  has_many :comments, dependent: :destroy
+
   scope :by_magnitude_type, ->(magnitude_types) { where(magnitude_type: magnitude_types) }
 end
