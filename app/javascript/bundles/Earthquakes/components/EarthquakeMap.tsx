@@ -1,14 +1,14 @@
 import React from "react";
-import { renderToString } from "react-dom/server";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+
+import 'leaflet/dist/leaflet.css';
 
 import EarthquakeCard from "./EarthquakeCard";
 
 import { State } from "./store";
 import Earthquake from "./models/Earthquake";
-import { setEarthquake } from "./slice/earthquake";
 
 const mapContainerStyle = {
   width: '100%',
@@ -20,46 +20,31 @@ const mapCenter = {
   lng: -96.6782088
 }
 
-let infoWindow: any = null;
-
-function infoWindowInstance(): any {
-  if (!infoWindow) {
-    infoWindow = new window.google.maps.InfoWindow();
-  }
-  return infoWindow;
-}
-
-function markers(earthquakes: Earthquake[], onClick: (eq: Earthquake) => void): Array<any> {
-  return earthquakes.map(eq => {
-    const marker = new window.google.maps.Marker(eq.marker());
-    marker.addListener("click", () => {
-      onClick(eq);
-      let infoWindow = infoWindowInstance();
-      infoWindow.close();
-      infoWindow.setContent(renderToString(<EarthquakeCard earthquake={eq} />));
-      infoWindow.open(marker.getMap(), marker);
-    });
-    return marker;
-  });
-}
-
 function EarthquakeMap() {
-  const dispatch = useDispatch();
-  const { isLoaded } = useJsApiLoader({ googleMapsApiKey: process.env.GOOGLE_MAP_API_KEY});
   const earthquakes: Earthquake[] = useSelector((state: State) => state.earthquakes.list);
   const selected: Earthquake | null = useSelector((state: State) => state.earthquake.selected);
   const center = selected ? selected.position.toGeoObject() : mapCenter;
-  const onClick = (eq: Earthquake) => dispatch(setEarthquake(eq));
   return (
     <Box sx={{ height: "100%" }}>
-      { isLoaded && (
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={center}
-          zoom={5}
-          onLoad={map => markers(earthquakes, onClick).forEach(m => m.setMap(map))}
+      <MapContainer 
+        center={[center.lat, center.lng]} 
+        zoom={5} 
+        scrollWheelZoom={false} 
+        style={mapContainerStyle}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-      ) }
+        {earthquakes.map(eq => (
+          <Marker 
+            key={eq.id} 
+            position={[eq.position.latitude, eq.position.longitude]}>
+            <Popup>
+              <EarthquakeCard earthquake={eq} />
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
     </Box>
   )
 }

@@ -5,4 +5,6 @@ class Feature < ApplicationRecord
   validates :magnitude, numericality: { greater_than_or_equal_to: -1.0, less_than_or_equal_to: 10.0 }
   validates :lat, numericality: { greater_than_or_equal_to: -90.0, less_than_or_equal_to: 90.0 }
   validates :lng, numericality: { greater_than_or_equal_to: -180.0, less_than_or_equal_to: 180.0 } 
+
+  scope :by_magnitude_type, ->(magnitude_types) { where(magnitude_type: magnitude_types) }
 end

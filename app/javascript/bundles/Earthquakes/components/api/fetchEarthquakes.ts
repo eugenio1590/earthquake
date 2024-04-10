@@ -1,9 +1,10 @@
 import axios from "axios";
 import { Dispatch } from "redux";
+import qs from "qs";
 
 import Earthquake, { Coordinates } from "../models/Earthquake";
 import Magnitude, { Type } from "../models/Magnitude";
-import { loading, setEarthquakes } from "../slice/earthquakes";
+import { Filters, loading, setEarthquakes } from "../slice/earthquakes";
 
 const instance = axios.create({
   baseURL: process.env.API_URL,
@@ -33,15 +34,13 @@ interface EarthquakeDTO {
   }
 }
 
-export const fetchEarthquakes = (page: number) => {
+export const fetchEarthquakes = (page: number, filters: Filters) => {
+  const params = { page, mag_type: filters.magnitudeTypes };
+  const queryString = qs.stringify(params, { arrayFormat: 'brackets' });
   return async (dispatch: Dispatch) => {
     try {
       dispatch(loading(true));
-      const response = await instance.get('/api/features', { 
-        params: {
-          page: page
-        }
-      });
+      const response = await instance.get(`/api/features?${queryString}`);
       const data = response.data;
       const pagination = data.meta.pagination;
       const earthquakes: Array<EarthquakeDTO> = data.data;

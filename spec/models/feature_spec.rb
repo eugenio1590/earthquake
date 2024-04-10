@@ -68,4 +68,26 @@ RSpec.describe Feature, type: :model do
       expect(feature.errors[:lng]).to include("must be less than or equal to 180.0")
     end
   end
+
+  describe ".by_magnitude_type" do
+    let!(:feature1) { create(:feature, magnitude_type: :md) }
+    let!(:feature2) { create(:feature, magnitude_type: :ml) }
+    let!(:feature3) { create(:feature, magnitude_type: :ms) }
+
+    it "returns features with the specified magnitude type" do
+      expect(Feature.by_magnitude_type(:md)).to eq([feature1])
+    end
+
+    it "returns an empty array if no features with the specified magnitude type exist" do
+      expect(Feature.by_magnitude_type(:unknown)).to eq([])
+    end
+
+    it "returns features with multiple specified magnitude types" do
+      expect(Feature.by_magnitude_type([:md, :ml])).to eq([feature1, feature2])
+    end
+
+    it "returns an empty array if no features with any of the specified magnitude types exist" do
+      expect(Feature.by_magnitude_type([:unknown1, :unknown2])).to eq([])
+    end
+  end
 end

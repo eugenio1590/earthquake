@@ -11,20 +11,31 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
-import { ChevronRight, Comment } from "@mui/icons-material";
+import { ChevronRight, Comment, FilterList } from "@mui/icons-material";
 import moment from "moment";
 
 import CommentDialog from "./CommentDialog";
+import MagnitudeTypeSelect from "./MagnitudeTypeSelect";
 
 import { State, useAppDispatch } from "./store";
 import Earthquake from "./models/Earthquake";
 import { setEarthquake } from "./slice/earthquake";
+import { setFilters, Filters } from "./slice/earthquakes";
 import { fetchEarthquakes } from "./api/fetchEarthquakes";
 
 interface Props {
   item: Earthquake
   onShow: (item: Earthquake) => void
   onAddComment: (item: Earthquake) => void
+}
+
+const EmptyState = () => {
+  return (
+    <Box sx={{margin: 'auto', textAlign: 'center'}}>
+      <Typography variant="h3">Oops!</Typography>
+      <Typography variant="h6">There are no Earthquakes</Typography>
+    </Box>
+  )
 }
 
 const EarthquakeItem: FunctionComponent<Props> = (props: Props) => {
@@ -59,6 +70,7 @@ const EarthquakeItem: FunctionComponent<Props> = (props: Props) => {
 function EarthquakeList() {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
+  const filters: Filters = useSelector((state: State) => state.earthquakes.filters);
   const isLoading: boolean = useSelector((state: State) => state.earthquakes.isLoading);
   const count: number = useSelector((state: State) => state.earthquakes.count);
   const page: number = useSelector((state: State) => state.earthquakes.page);
@@ -75,22 +87,35 @@ function EarthquakeList() {
     onClose();
   }
   const onClose = () => setOpen(false);
-  const onPaginated = (nextPage: number, force: boolean = true) => {
+  const onPaginated = (nextPage: number, filters: Filters, force: boolean = true) => {
     if (force || page !== nextPage) {
-      dispatch(fetchEarthquakes(nextPage));
+      dispatch(fetchEarthquakes(nextPage, filters));
     }
   }
+  
+  const onMagnitudeTypeChange = (values: string[]) => {
+    const newFilters: Filters = {...filters, magnitudeTypes: values };
+    dispatch(setFilters(newFilters));
+    onPaginated(0, newFilters);
+  }
 
-  useEffect(() => onPaginated(page), [dispatch]); // Load the first page
+  useEffect(() => onPaginated(page, filters), [dispatch]); // Load the first page
 
   return (
     <Box sx={{ height: "100%", bgcolor: '#F0F0F0', display: 'flex', flexDirection: 'column', padding: 2 }}>
       <Typography variant="h5" paddingBottom={2}>
         USGS Earthquakes
       </Typography>
+      <Box sx={{display: 'flex', alignItems: 'center', paddingX: 2, paddingY: 1, marginBottom: 2, bgcolor: 'background.paper' }}>
+        <FilterList sx={{ marginRight: 1 }}/>
+        <MagnitudeTypeSelect 
+          value={filters.magnitudeTypes} 
+          onChange={onMagnitudeTypeChange}/>
+      </Box>
+
       {isLoading && <CircularProgress sx={{margin: 'auto'}} />}
 
-      {!isLoading && (
+      {!isLoading && earthquakes.length > 0 && (
         <>
           <List sx={{ bgcolor: 'background.paper', marginBottom: 'auto' }}>
             {earthquakes.map((eq, index) => (<>
@@ -103,9 +128,11 @@ function EarthquakeList() {
             showLastButton
             count={count}
             page={page}
-            onChange={(_, page) => onPaginated(page, false)} />
+            onChange={(_, page) => onPaginated(page, filters, false)} />
         </>
       )}
+
+      {!isLoading && earthquakes.length === 0 && <EmptyState />}
 
       {selected && (
         <CommentDialog

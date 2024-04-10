@@ -1,7 +1,8 @@
 class Api::FeaturesController < ApplicationController
 
   def index
-    @features = Feature.page(params[:page]).per(params[:per_page] || 10)
+    @features = params.key?(:mag_type) ? Feature.by_magnitude_type(params[:mag_type]) : Feature.all
+    @features = @features.page(params[:page]).per(params[:per_page] || 10)
     @options = { meta: { pagination: pagination } }
     render json: FeatureSerializer.new(@features, @options).serializable_hash.to_json
   end
